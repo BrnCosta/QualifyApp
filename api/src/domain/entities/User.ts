@@ -1,6 +1,6 @@
 export default interface User {
-    ID: Number,
-    NomeCompleto: String,
-    Email: String,
+    ID: number,
+    NomeCompleto: string,
+    Email: string,
     IsAdm: Boolean,
 }

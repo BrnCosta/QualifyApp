@@ -1,4 +1,4 @@
 export default interface Category {
-    ID: Number,
+    ID: number,
     Name: string,
 }

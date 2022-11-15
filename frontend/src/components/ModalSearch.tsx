@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { COLORS } from '../utils/colors';
 import { Movies } from '../utils/Data/Movies';
-import { Movie } from '../utils/Interface/Movie';
+import { Movie } from '../utils/Interface/IMovie';
 
 const MovieItem = ({ title, image }) => {
     return (

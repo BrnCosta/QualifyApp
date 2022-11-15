@@ -19,7 +19,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "requireFullScreen": true
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.pds.QualifyApp"
     },
     "android": {
       "adaptiveIcon": {

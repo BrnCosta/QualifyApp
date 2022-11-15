@@ -1,4 +1,4 @@
-import { Category } from "../Interface/Movie";
+import { Category } from "../Interface/IMovie";
 
 export const Categories: Category[] = [
     {

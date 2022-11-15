@@ -10,6 +10,9 @@ import { COLORS } from '../../utils/colors';
 import { Actor } from '../../utils/Interface/Actor';
 import Header from '../../components/Header';
 import AuthContext from '../../components/AuthContext';
+import { base_url } from '../../utils/Data/Constants';
+
+
 
 const Movie = (props) => {
 
@@ -19,6 +22,27 @@ const Movie = (props) => {
     const windowHeight = height;
 
     const { signed } = useContext(AuthContext);
+
+    const [movieData, setMovieData] = useState(null);
+
+    useEffect(() => {
+        let url = base_url + 'getMovieByCategory?category=Action';
+        console.log(url);
+        fetch(url, {
+            method: 'GET',
+        })
+        .then((response) => {
+            console.log(response);
+            console.log(response.json());
+        })
+        .then((responseJson) => {
+            JSON.stringify(responseJson);
+            console.log(responseJson);
+        })
+        .catch((e: ErrorEvent) => {
+            console.log(e.message);
+        });
+    }, [])
 
     const verifyUserLogin = () => {
         if (signed)

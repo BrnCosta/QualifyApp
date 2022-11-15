@@ -1,4 +1,4 @@
-import { Movie } from "../Interface/Movie";
+import { Movie } from "../Interface/IMovie";
 
 export const Movies: Movie[] = [
     {

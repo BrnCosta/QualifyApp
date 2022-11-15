@@ -1,12 +1,16 @@
-import Actor from "./Actor";
-import Category from "./Category";
-
 export default interface Movie {
-    ID: Number,
+    Id: number,
     Title: string,
     Image: string,
     Sinopse: string,
-    WhereToWatch: string;
-    Cast: Actor[];
-    Categories: Category[];
+    Star1: string;
+    Star2: string;
+    Star3: string;
+    Star4: string;
+    Categories: string;
+    ReleaseYear: string;
+    Certificate: string;
+    Runtime: number;
+    IMDB_Rating: number;
+    NumVotes: number;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, Image, TouchableOpacity,
   ImageBackground, TouchableWithoutFeedback,
@@ -23,7 +23,7 @@ const Home = (props) => {
     setGradientOffset(offset);
   }
 
-  const highlight: String[] =
+  const highlight: string[] =
     ['Top 250', 'What to watch', 'What to watch', 'What to watch', 'What to watch', 'What to watch'];
 
   const MovieItem = ({ name }) => {
@@ -51,7 +51,7 @@ const Home = (props) => {
     )
   };
 
-  const renderItem: ListRenderItem<String> = ({ item }) => <MovieItem name={item} />;
+  const renderItem: ListRenderItem<string> = ({ item }) => <MovieItem name={item} />;
 
   const MainMovie = () => (
     <View style={styles.mainMovie}>

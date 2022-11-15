@@ -1,13 +1,13 @@
 export interface IUser {
-    ID: Number,
-    NomeCompleto: String,
-    Email: String,
+    ID: number,
+    NomeCompleto: string,
+    Email: string,
     IsAdm: Boolean,
 }
 
 export class User implements IUser {
-    ID: Number;
-    NomeCompleto: String;
-    Email: String;
+    ID: number;
+    NomeCompleto: string;
+    Email: string;
     IsAdm: Boolean;
 }

@@ -14,7 +14,7 @@ const ModalRate = ({ visible, setVisible }) => {
     const [stars, setStar] = useState([true, true, true, false, false]);
     const [review, setReview] = useState('');
 
-    const setStart = (valueStar: Number) => {
+    const setStart = (valueStar: number) => {
         let arr;
         if (valueStar == 1)
             arr = [true, false, false, false, false];

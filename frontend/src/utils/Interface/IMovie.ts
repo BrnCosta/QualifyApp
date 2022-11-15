@@ -1,8 +1,8 @@
 import { Actor } from "./Actor";
 import { Category } from "./Category";
 
-export interface Movie {
-    ID: Number,
+export interface IMovie {
+    ID: number,
     Title: string,
     Image: string,
     Sinopse: string,
