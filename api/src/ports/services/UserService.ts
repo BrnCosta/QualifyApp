@@ -8,11 +8,11 @@ export default class UserService {
         this._userRepository = userRepository;
     }
 
-    public async getUserByName(name: string): Promise<User> {
-        return this._userRepository.getUserByName(name);
-    }
-
     public async getUserLogin(email: string, password: string): Promise<User> {
         return this._userRepository.getUserLogin(email, password);
+    }
+
+    public async createAccount(user: User, password: string): Promise<boolean> {
+        return this._userRepository.createAccount(user, password);
     }
 }

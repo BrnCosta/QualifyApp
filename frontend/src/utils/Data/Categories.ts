@@ -1,12 +1,21 @@
-import { Category } from "../Interface/IMovie";
+import { base_url } from './Constants';
+import { Category } from '../Interface/Category';
 
-export const Categories: Category[] = [
-    {
-        ID: 1,
-        Name: 'Action'
-    },
-    {
-        ID: 2,
-        Name: 'Adventure'
-    },
-];
+
+type JSONResponse = {
+    data?: {
+        result: Category[],
+    }
+}
+
+const fetchData = async () => {
+    const result = await fetch(base_url + 'getAllCategories');
+
+    const { data }: JSONResponse = await result.json();
+
+    categories = data.result;
+}
+
+fetchData();
+
+export var categories: Category[] = [];

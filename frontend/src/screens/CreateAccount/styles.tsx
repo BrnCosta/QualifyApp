@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { COLORS } from '../../utils/colors';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const windowWidth = width, windowHeight = height;
 
 const statusBarHeight = StatusBar.currentHeight;
@@ -34,9 +34,10 @@ export const styles = StyleSheet.create({
         height: 50,
         padding: 10,
         marginTop: 15,
-        
+
         fontFamily: 'Roboto',
         fontSize: 16,
+        color: COLORS.white,
 
         borderWidth: 1,
         borderColor: COLORS.white,
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
     },
 
     forgotPassword: {
-        color: COLORS.white,
+        color: 'red',
         fontFamily: 'Roboto',
         fontSize: 14,
         paddingTop: 5,
@@ -76,7 +77,7 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.white,
         textShadowColor: COLORS.secondary,
-        textShadowOffset: {width: 1, height: 1},
+        textShadowOffset: { width: 1, height: 1 },
     },
 
     createContainer: {

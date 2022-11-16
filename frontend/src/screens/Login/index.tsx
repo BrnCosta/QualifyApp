@@ -13,22 +13,34 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const { signed, logIn } = useContext(AuthContext);
 
   const params = navigation.getState().routes.find((item) => item.name == 'Login').params;
 
   const validateLogin = async () => {
-    let nextPage = params.nextPage;
-    let movie = params.movie;
+    let nextPage = params?.nextPage;
+    let movie = params?.movie;
     setLoading(true);
-    await logIn().then(() => {
-      console.log('User successfully logged in!');
-      setLoading(false);
-      if (nextPage != null || nextPage == '')
-        navigation.navigate(nextPage, { movie });
-      else
-        navigation.goBack();
+
+    await logIn(email, password).then((response) => {
+      if (response) {
+        console.log('User successfully logged in!');
+        setLoading(false);
+        setEmail('');
+        setPassword('');
+        setError('');
+        if (nextPage != null || nextPage == '')
+          navigation.navigate(nextPage, { movie });
+        else
+          navigation.goBack();
+      } else {
+        setLoading(false);
+        setError('Invalid email or password');
+      }
+    }).catch((e) => {
+      console.log(e);
     });
   }
 
@@ -49,12 +61,13 @@ const Login = () => {
           onChangeText={text => setPassword(text)}
           placeholder="Password"
           placeholderTextColor={COLORS.white}
+          secureTextEntry
         />
         <TouchableOpacity
           onPress={() => { }}
           style={{ alignSelf: 'flex-end' }}
         >
-          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          <Text style={styles.forgotPassword}>{error}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.loginBtn}

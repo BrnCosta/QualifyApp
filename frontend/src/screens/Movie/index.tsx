@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Image, Text, View, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,60 +11,69 @@ import { Actor } from '../../utils/Interface/Actor';
 import Header from '../../components/Header';
 import AuthContext from '../../components/AuthContext';
 import { base_url } from '../../utils/Data/Constants';
-
-
+import { IMovie } from '../../utils/Interface/IMovie';
 
 const Movie = (props) => {
 
     const navigation = useNavigation<NavigationProp>();
-    const movieName = navigation.getState().routes.find((item) => item.name == 'Movie').params.movie;
     const { height } = Dimensions.get('window');
     const windowHeight = height;
 
     const { signed } = useContext(AuthContext);
 
-    const [movieData, setMovieData] = useState(null);
-
-    useEffect(() => {
-        let url = base_url + 'getMovieByCategory?category=Action';
-        console.log(url);
-        fetch(url, {
-            method: 'GET',
-        })
-        .then((response) => {
-            console.log(response);
-            console.log(response.json());
-        })
-        .then((responseJson) => {
-            JSON.stringify(responseJson);
-            console.log(responseJson);
-        })
-        .catch((e: ErrorEvent) => {
-            console.log(e.message);
-        });
-    }, [])
+    const [movieData, setMovieData] = useState<IMovie>({
+        id: 0,
+        title: '',
+        image: '',
+        sinopse: '',
+        star1: '',
+        star2: '',
+        star3: '',
+        star4: '',
+        categories: '',
+        releasedyear: '',
+        certificate: '',
+        runtime: 10,
+        imdb_rating: 0,
+        numvotes: 0,
+        videoid: '',
+    });
 
     const verifyUserLogin = () => {
         if (signed)
-            navigation.navigate('Rating', { movie: movieName });
+            navigation.navigate('Rating', { movie: movieData });
         else
-            navigation.navigate('Login', { movie: movieName, nextPage: 'Rating' });
+            navigation.navigate('Login', { movie: movieData, nextPage: 'Rating' });
     }
 
     const cast: Actor[] = [
         {
-            Name: 'Chris Hemsworth'
+            Name: movieData.star1,
         },
         {
-            Name: 'Christian Bale'
+            Name: movieData.star2,
         },
         {
-            Name: 'Natalie Portman'
+            Name: movieData.star3,
         },
         {
-            Name: 'Tessa Thompson'
+            Name: movieData.star4,
         },
     ];
+
+    const [isFocuse, setIsFocuse] = useState(0);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setIsFocuse(isFocuse => isFocuse + 1);
+        });
+        return unsubscribe;
+
+    }, [navigation])
+
+    useEffect(useCallback(() => {
+        setMovieData(navigation.getState().routes.find((item) => item.name == 'Movie').params.movie);
+    }, [isFocuse]));
 
     return (
         <View style={styles.container}>
@@ -75,64 +84,139 @@ const Movie = (props) => {
                 <View style={styles.trailerView}>
                     <YoutubePlayer
                         height={windowHeight * 0.3}
-                        videoId={'Go8nTmfrQd8'}
+                        videoId={movieData.videoid != null ? movieData.videoid : 'null'}
                     />
                 </View>
 
                 <View style={styles.infoView}>
-                    <Text style={styles.infoText}>2022 - 1 h 58 min</Text>
-                    <Text style={styles.infoText}>14</Text>
+                    <View>
+                        <Text style={styles.infoText}>{movieData?.title}</Text>
+                        <Text style={styles.infoText}>{movieData.releasedyear} - {movieData?.runtime}</Text>
+                    </View>
+                    <Text style={styles.infoText}>{movieData.certificate}</Text>
                 </View>
                 <View style={styles.categoryGroup}>
-                    <View style={styles.categoryView}>
-                        <Text style={styles.categoryTitle}>Action</Text>
-                    </View>
-                    <View style={styles.categoryView}>
-                        <Text style={styles.categoryTitle}>Adventure</Text>
-                    </View>
-                    <View style={styles.categoryView}>
-                        <Text style={styles.categoryTitle}>Comedy</Text>
-                    </View>
+                    {movieData?.categories.split(',').map((item) => (
+                        <View style={styles.categoryView}>
+                            <Text style={styles.categoryTitle}>{item}</Text>
+                        </View>
+                    ))}
                 </View>
 
                 <View style={styles.sinopseView}>
                     <Text style={styles.sinopseTitle}>Sinopse</Text>
                     <Text style={styles.sinopseText}>
-                        “Thor: Amor e Trovão”, da Marvel Studios, encontra o Deus do Trovão numa jornada diferente
-                        de tudo o que já enfrentou – a procura pela paz interior. Mas a reforma de Thor é interrompida
-                        por um assassino galáctico conhecido como Gorr, o Carniceiro dos Deuses, que procura a
-                        extinção dos deuses. Para combater a ameaça, Thor pede a ajuda da Rei Valkiria, de Korg
-                        e da ex-namorada Jane Foster, que – para surpresa de Thor – empunha inexplicavelmente
-                        o seu martelo mágico, Mjolnir, e se intitula a Poderosa Thor. Juntos, eles embarcam
-                        numa angustiante aventura cósmica para descobrir o mistério da vingança do Carniceiro
-                        dos Deuses e detê-lo antes que seja tarde demais.
+                        {movieData.sinopse}
                     </Text>
                 </View>
 
                 <View style={styles.infoView}>
-                    <View style={styles.whereWatchView}>
-                        <Text style={styles.whereWatchText}>Available on</Text>
-                        <Image
-                            source={require('../../assets/images/disney.png')}
-                            style={styles.whereWatchImage}
-                            resizeMode='contain'
-                        />
-                    </View>
-
                     <TouchableOpacity style={styles.ratingView}
                         onPress={verifyUserLogin}>
                         <View style={styles.ratingButton}>
                             <Text style={styles.ratingTitle}>Rating</Text>
                             <MaterialIcons name="arrow-forward-ios" size={12} color={COLORS.primary} />
                         </View>
-                        <Text style={styles.ratingValue}>3.5 / 5</Text>
-                        <View style={styles.movieStars}>
-                            <MaterialIcons name='star' size={15} color={COLORS.star} />
-                            <MaterialIcons name='star' size={15} color={COLORS.star} />
-                            <MaterialIcons name='star' size={15} color={COLORS.star} />
-                            <MaterialIcons name='star-half' size={15} color={COLORS.star} />
-                            <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
-                        </View>
+                        <Text style={styles.ratingValue}>{(movieData?.imdb_rating / 2).toFixed(1)} / 5</Text>
+                        {
+                            movieData?.imdb_rating == 10 ? (
+                                <View style={styles.movieStars}>
+                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                </View>
+                            ) :
+                                movieData?.imdb_rating >= 9 ? (
+                                    <View style={styles.movieStars}>
+                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                        <MaterialIcons name='star-half' size={15} color={COLORS.star} />
+                                    </View>
+                                ) :
+                                    movieData?.imdb_rating >= 8 ? (
+                                        <View style={styles.movieStars}>
+                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                            <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                        </View>
+                                    ) :
+                                        movieData?.imdb_rating >= 7 ? (
+                                            <View style={styles.movieStars}>
+                                                <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                <MaterialIcons name='star-half' size={15} color={COLORS.star} />
+                                                <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                            </View>
+                                        ) :
+                                            movieData?.imdb_rating >= 6 ? (
+                                                <View style={styles.movieStars}>
+                                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                </View>
+                                            ) :
+                                                movieData?.imdb_rating >= 5 ? (
+                                                    <View style={styles.movieStars}>
+                                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                        <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                        <MaterialIcons name='star-half' size={15} color={COLORS.star} />
+                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                    </View>
+                                                ) :
+                                                    movieData?.imdb_rating >= 4 ? (
+                                                        <View style={styles.movieStars}>
+                                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                            <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                            <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                            <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                            <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                        </View>
+                                                    ) :
+                                                        movieData?.imdb_rating >= 3 ? (
+                                                            <View style={styles.movieStars}>
+                                                                <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                                <MaterialIcons name='star-half' size={15} color={COLORS.star} />
+                                                                <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                            </View>
+                                                        ) :
+                                                            movieData?.imdb_rating >= 2 ? (
+                                                                <View style={styles.movieStars}>
+                                                                    <MaterialIcons name='star' size={15} color={COLORS.star} />
+                                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                    <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                </View>
+                                                            ) :
+                                                                movieData?.imdb_rating >= 1 ? (
+                                                                    <View style={styles.movieStars}>
+                                                                        <MaterialIcons name='star-half' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                    </View>
+                                                                ) :
+                                                                    (<View style={styles.movieStars}>
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                        <MaterialIcons name='star-outline' size={15} color={COLORS.star} />
+                                                                    </View>)
+                        }
                     </TouchableOpacity>
                 </View>
 

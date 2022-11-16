@@ -1,37 +1,69 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { Modal, StatusBar, StyleSheet, View, TouchableWithoutFeedback, TextInput, Text, TouchableOpacity, Dimensions } from 'react-native';
 
 import { COLORS } from '../utils/colors';
-import { BlurView } from 'expo-blur';
 
-const ModalRate = ({ visible, setVisible }) => {
+import { Rated } from '../utils/Interface/Rated';
+import AuthContext from './AuthContext';
+import { User } from '../utils/Interface/User';
+
+const ModalRate = ({ visible, setVisible, comments, setComments }) => {
 
     const closeModal = () => {
         setVisible(false);
     }
 
-    const [stars, setStar] = useState([true, true, true, false, false]);
+    const [stars, setStar] = useState([false, false, false, false, false]);
     const [review, setReview] = useState('');
+    const [valueRate, setValueRate] = useState(0);
+
+    const { user } = useContext(AuthContext);
 
     const setStart = (valueStar: number) => {
         let arr;
-        if (valueStar == 1)
+        if (valueStar == 1) {
+            setValueRate(1);
             arr = [true, false, false, false, false];
-        else if (valueStar == 2)
+        }
+        else if (valueStar == 2) {
+            setValueRate(2);
             arr = [true, true, false, false, false];
-        else if (valueStar == 3)
+        }
+        else if (valueStar == 3) {
+            setValueRate(3);
             arr = [true, true, true, false, false];
-        else if (valueStar == 4)
+        }
+        else if (valueStar == 4) {
+            setValueRate(4);
             arr = [true, true, true, true, false];
-        else
+        }
+        else {
+            setValueRate(5);
             arr = [true, true, true, true, true];
+        }
 
         setStar(arr);
     }
 
     const defineValue = (text) => {
         setReview(text);
+    }
+
+    const saveComment = () => {
+        if (review == '') {
+            return;
+        }
+
+        var comment: Rated = {
+            Comment: review,
+            Rate: valueRate,
+            User: (user as User).nomecompleto
+        };
+
+        let arr = [...comments, comment];
+        setComments(arr);
+        setVisible(false);
     }
 
     return (
@@ -90,7 +122,7 @@ const ModalRate = ({ visible, setVisible }) => {
                             value={review}
                             maxLength={250}
                         />
-                        <TouchableOpacity style={styles.rateButton}>
+                        <TouchableOpacity style={styles.rateButton} onPress={saveComment}>
                             <Text style={styles.rateText}>Rate</Text>
                         </TouchableOpacity>
                     </View>

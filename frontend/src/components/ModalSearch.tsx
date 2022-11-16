@@ -3,8 +3,8 @@ import { TextInput, Text, Modal, View, StyleSheet, StatusBar, FlatList, ListRend
 import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { COLORS } from '../utils/colors';
-import { Movies } from '../utils/Data/Movies';
-import { Movie } from '../utils/Interface/IMovie';
+import * as Data from '../utils/Data/Movies';
+import { IMovie } from '../utils/Interface/IMovie';
 
 const MovieItem = ({ title, image }) => {
     return (
@@ -21,31 +21,27 @@ const MovieItem = ({ title, image }) => {
 const ModalSearch = ({ visible, setVisible }) => {
 
     const [textSearch, setTextSearch] = useState('');
-    const [dataSearch, setDataSearch] = useState(Movies);
+    const [dataSearch, setDataSearch] = useState([]);
 
-    const renderItem: ListRenderItem<Movie> = ({ item }) => <MovieItem title={item.Title} image={item.Image} />;
-
-    useEffect(() => {
-        setDataSearch(Movies);
-    }, [Movies])
+    const renderItem: ListRenderItem<IMovie> = ({ item }) => <MovieItem title={item.title} image={item.image} />;
 
     const searchMovies = (text) => {
         setTextSearch(text);
 
         if (text == '') {
-            setDataSearch(Movies);
+            setDataSearch(Data.movies);
             return;
         }
 
-        var filter = Movies.filter((item) =>
-            (item.Title).toLowerCase().indexOf(text.toLowerCase()) > -1);
+        var filter = Data.movies.filter((item) =>
+            (item.title).toLowerCase().indexOf(text.toLowerCase()) > -1);
         setDataSearch(filter);
     }
 
     const closeModal = () => {
         setTextSearch('');
         setVisible(false);
-        setDataSearch(Movies);
+        setDataSearch(Data.movies);
     }
 
     return (

@@ -13,4 +13,5 @@ export default interface Movie {
     Runtime: number;
     IMDB_Rating: number;
     NumVotes: number;
+    videoid: string;
 }

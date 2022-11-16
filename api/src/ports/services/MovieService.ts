@@ -12,26 +12,31 @@ export default class MovieService {
         this._rateRepository = rateRepository;
     }
 
-    public async getMovieByName(movieName: string): Promise<Movie> {
-        return await this._movieRepository.getMovieByName(movieName);
+    public async getMovieById(movieId: number): Promise<Movie> {
+        return await this._movieRepository.getMovieById(movieId);
     }
 
     public async getMoviesByCategory(category: string): Promise<Movie[]> {
         return await this._movieRepository.getMoviesByCategory(category);
     }
 
-    public async calculateMovieRate(movieName: string): Promise<number> {
+    public async getTop100(): Promise<Movie[]> {
+        return await this._movieRepository.getTop100();
+    }
 
-        const movie = await this._movieRepository.getMovieByName(movieName);
+    public async getWhatWatch(): Promise<Movie[]> {
+        return await this._movieRepository.getWhatWatch();
+    }
 
-        const rateArray = await this._rateRepository.getAllRateByMovie(movie.Id);
+    public async getEditorPicks(): Promise<Movie[]> {
+        return await this._movieRepository.getEditorPicks();
+    }
 
-        let rateMovie: number = 0;
-        rateArray.forEach(rate => {
-            rateMovie += rate.Rate;
-        });
+    public async getTopPicks(): Promise<Movie[]> {
+        return await this._movieRepository.getTopPicks();
+    }
 
-        rateMovie /= rateArray.length;
-        return rateMovie;
+    public async getAllMovies(): Promise<Movie[]> {
+        return await this._movieRepository.getAllMovies();
     }
 }

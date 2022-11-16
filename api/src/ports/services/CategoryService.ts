@@ -8,7 +8,7 @@ export default class RateService {
         this._categoryRepository = categoryRepository;
     }
 
-    public async getAllRateByMovie(): Promise<Category[]> {
+    public async getAllCategories(): Promise<Category[]> {
         return await this._categoryRepository.getAllCategories();
     }
 }
